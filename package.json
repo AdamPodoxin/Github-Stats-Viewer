@@ -1,0 +1,19 @@
+{
+  "name": "github-stats-viewer",
+  "version": "1.0.0",
+  "description": "Web app which uses Github API to view stats and repos of Github users.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdamPodoxin/Github-Stats-Viewer.git"
+  },
+  "author": "Adam Podoxin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AdamPodoxin/Github-Stats-Viewer/issues"
+  },
+  "homepage": "https://github.com/AdamPodoxin/Github-Stats-Viewer#readme"
+}
