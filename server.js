@@ -14,3 +14,5 @@ const server = app.listen(PORT, () =>
 app.use(bodyParser.json());
 
 app.use("/api/users", usersRoute);
+
+app.use(express.static("public"));
