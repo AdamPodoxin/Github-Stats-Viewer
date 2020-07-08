@@ -1,9 +1,7 @@
-const socket = io();
-
 let userInput;
 
 const getUser = () => {
-  socket.emit("get user", userInput.value);
+  getApiRequest(`users/${userInput.value}`, (user) => loadUser(user));
 };
 
 const loadUser = (user) => {
@@ -19,5 +17,3 @@ const loadUser = (user) => {
 window.onload = () => {
   userInput = document.getElementById("get-user-input");
 };
-
-socket.on("return user", (user) => loadUser(user));
