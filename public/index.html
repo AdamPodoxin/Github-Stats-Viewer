@@ -8,7 +8,18 @@
 
   <body>
     <!-- Website -->
+    <div id="get-user">
+      <label for="get-user-input">User: </label>
+      <input type="text" id="get-user-input" placeholder="User" />
+      <input
+        type="button"
+        id="get-user-button"
+        value="Get user"
+        onclick="getUser();"
+      />
+    </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
     <script src="js/index.js"></script>
   </body>
 </html>
