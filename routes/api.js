@@ -4,8 +4,8 @@ const router = express.Router();
 const https = require("https");
 
 router.get("/", (req, res) => {
-  const user = req.originalUrl.replace("/api/users/", "");
-  const url = `https://api.github.com/users/${user}`;
+  const path = req.originalUrl.replace("/api/", "");
+  const url = `https://api.github.com/${path}`;
 
   const options = {
     headers: {

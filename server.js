@@ -7,6 +7,7 @@ const socketIO = require("socket.io");
 const PORT = 5000 || process.env.PORT;
 
 const usersRoute = require("./routes/users");
+const apiRoute = require("./routes/api");
 
 const app = express();
 
@@ -16,7 +17,8 @@ const server = app.listen(PORT, () =>
 
 app.use(bodyParser.json());
 
-app.use("/api/users/*", usersRoute);
+app.use("/api", apiRoute);
+app.use("/api/*", apiRoute);
 
 app.use(express.static("public"));
 
