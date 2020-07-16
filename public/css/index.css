@@ -1,0 +1,9 @@
+.repo {
+  display: inline-table;
+  width: "200px";
+  border: 1px solid black;
+}
+
+.repo:hover {
+  cursor: pointer;
+}
