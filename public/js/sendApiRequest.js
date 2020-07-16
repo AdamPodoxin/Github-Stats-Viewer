@@ -8,6 +8,6 @@ const getApiRequest = (path, callback) => {
     }
   };
 
-  xhr.open("GET", `https://api.github.com/${path}`, true);
+  xhr.open("GET", `/api/${path}`, true);
   xhr.send();
 };
