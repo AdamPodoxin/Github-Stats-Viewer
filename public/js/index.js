@@ -18,13 +18,13 @@ const loadUser = (user) => {
   loginText.innerHTML = user.login;
 
   Array.from(user.repos).forEach((repo) => {
-    const variables = {
-      name: repo.name,
-      description: repo.description,
-      githubURL: repo.html_url,
-    };
+    let newRepo = document.createElement("github-repo");
+    newRepo.setAttribute("name", repo.name);
+    newRepo.setAttribute("description", repo.description);
+    newRepo.setAttribute("github-url", repo.html_url);
 
-    sFront.createElementFromTemplate(repoTemplatePath, variables, reposDiv);
+    reposDiv.appendChild(newRepo);
+    sFront.scanForElements("github-repo");
   });
 };
 
@@ -37,4 +37,5 @@ window.onload = () => {
   reposDiv = document.querySelector("#repos");
 
   sFront.registerFunctionsInWindow({ getUser, loadGithubRepo });
+  sFront.registerElement(repoTemplatePath, "github-repo");
 };
