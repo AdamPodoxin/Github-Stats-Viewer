@@ -1,11 +1,14 @@
 .repo {
   display: inline-table;
+
   width: 500px;
+  height: 200px;
 
   padding: 1rem;
   margin: 1rem;
 
-  border: 1px solid black;
+  background-color: #f9f9f9;
+  border-radius: 1rem;
 }
 
 .repo:hover {

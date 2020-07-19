@@ -17,11 +17,28 @@ const loadUser = (user) => {
   nameText.innerHTML = user.name;
   loginText.innerHTML = user.login;
 
+  reposDiv.innerHTML = "";
+
   Array.from(user.repos).forEach((repo) => {
+    let attributes = {
+      name: repo.name,
+      description: repo.description,
+      html_url: repo.html_url,
+    };
+
     let newRepo = document.createElement("github-repo");
-    newRepo.setAttribute("name", repo.name);
-    newRepo.setAttribute("description", repo.description);
-    newRepo.setAttribute("github-url", repo.html_url);
+    newRepo.setAttribute(
+      "name",
+      attributes.name == null ? "" : attributes.name
+    );
+    newRepo.setAttribute(
+      "description",
+      attributes.description == null ? "" : attributes.description
+    );
+    newRepo.setAttribute(
+      "html_url",
+      attributes.html_url == null ? "" : attributes.html_url
+    );
 
     reposDiv.appendChild(newRepo);
   });
