@@ -1,6 +1,10 @@
 .repo {
   display: inline-table;
-  width: "200px";
+  width: 500px;
+
+  padding: 1rem;
+  margin: 1rem;
+
   border: 1px solid black;
 }
 

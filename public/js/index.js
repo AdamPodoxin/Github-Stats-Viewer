@@ -24,8 +24,9 @@ const loadUser = (user) => {
     newRepo.setAttribute("github-url", repo.html_url);
 
     reposDiv.appendChild(newRepo);
-    sFront.scanForElements("github-repo");
   });
+
+  sFront.scanForElements("github-repo");
 };
 
 const loadGithubRepo = (repoURL) => {
