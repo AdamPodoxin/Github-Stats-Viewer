@@ -18,7 +18,7 @@
 topic-card button {
   display: inline-block;
 
-  margin: 0.2rem 0.1rem;
+  margin: 0.2rem 0;
   padding: 0.2rem 0.7rem;
 
   border: none;
@@ -29,4 +29,35 @@ topic-card button {
 
   text-align: center;
   text-decoration: none;
+}
+
+language-card button {
+  display: inline-block;
+
+  padding: 10px 0;
+
+  border: none;
+
+  background-color: #ddd;
+
+  text-align: center;
+  text-decoration: none;
+}
+
+language-card button:hover .tooltiptext {
+  visibility: visible;
+}
+
+.tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
 }

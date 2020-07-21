@@ -1,7 +1,10 @@
 import * as sFront from "https://adampodoxin.github.io/sFront/sFront.js";
 
 const repoTemplatePath = "../templates/repo.html",
-  topicCardTemplatePath = "../templates/topicCard.html";
+  topicCardTemplatePath = "../templates/topicCard.html",
+  languageCardTemplatePath = "../templates/languageCard.html";
+
+import { colors } from "./languageColors.js";
 
 let userInput, reposDiv;
 
@@ -26,6 +29,7 @@ const loadUser = (user) => {
       description: repo.description,
       html_url: repo.html_url,
       topics: repo.topics,
+      languages: repo.languages,
     };
 
     let newRepo = document.createElement("github-repo");
@@ -46,6 +50,17 @@ const loadUser = (user) => {
       newRepo.setAttribute("topics", attributes.topics.join());
     }
 
+    let languages = [];
+    let languagesTotal = 0;
+
+    for (let key in attributes.languages) {
+      languages.push(`${key}_${attributes.languages[key]}`);
+      languagesTotal += attributes.languages[key];
+    }
+
+    newRepo.setAttribute("languages", languages.join());
+    newRepo.setAttribute("languages-total", languagesTotal);
+
     reposDiv.appendChild(newRepo);
   });
 
@@ -54,6 +69,22 @@ const loadUser = (user) => {
     let repos = document.getElementsByTagName("github-repo");
 
     Array.from(repos).forEach((repo) => {
+      let languages = repo.getAttribute("languages");
+
+      if (languages != null) {
+        Array.from(languages.split(",")).forEach((language) => {
+          let languageCard = document.createElement("language-card");
+
+          let languageDetails = language.split("_");
+          languageCard.setAttribute("language", languageDetails[0]);
+          languageCard.setAttribute("amount", languageDetails[1]);
+
+          repo.childNodes[0].appendChild(languageCard);
+        });
+      }
+
+      repo.childNodes[0].appendChild(document.createElement("br"));
+
       let topics = repo.getAttribute("topics");
 
       if (topics != null) {
@@ -67,6 +98,31 @@ const loadUser = (user) => {
     });
 
     sFront.scanForElements("topic-card");
+    sFront.scanForElements("language-card");
+
+    setTimeout(() => {
+      let languageCards = document.getElementsByTagName("language-card");
+
+      Array.from(languageCards).forEach((card) => {
+        let language = card.getAttribute("language");
+        let amount = parseInt(card.getAttribute("amount"));
+
+        card.childNodes[0].style.backgroundColor = colors[language].color;
+
+        let parentRepo = card.parentNode.parentNode;
+        let languagesTotal = parseInt(
+          parentRepo.getAttribute("languages-total")
+        );
+
+        let ratio = amount / languagesTotal;
+
+        let width = ratio * 450;
+
+        card.childNodes[0].style.width = width + "px";
+
+        card.childNodes[0].childNodes[0].innerHTML = language;
+      });
+    }, 500);
   }, 500);
 };
 
@@ -81,4 +137,5 @@ window.onload = () => {
   sFront.registerFunctionsInWindow({ getUser, loadGithubRepo });
   sFront.registerElement(repoTemplatePath, "github-repo");
   sFront.registerElement(topicCardTemplatePath, "topic-card");
+  sFront.registerElement(languageCardTemplatePath, "language-card");
 };
