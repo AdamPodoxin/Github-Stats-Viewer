@@ -6,14 +6,14 @@ const https = require("https");
 const User = require("../Models/user.js");
 const Repo = require("../Models/repo.js");
 
-const keys = require("../private_data/keys");
+//const keys = require("../private_data/keys");
 
 const getHttpRequest = (url, onFinish) => {
   const options = {
     headers: {
       "User-Agent": "AdamPodoxin",
       Accept: "application/vnd.github.mercy-preview+json",
-      Authorization: keys.OAuth,
+      //Authorization: keys.OAuth,
     },
   };
 
