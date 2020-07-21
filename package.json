@@ -4,7 +4,7 @@
   "description": "Web app which uses Github API to view stats and repos of Github users.",
   "main": "server.js",
   "scripts": {
-    "postinstall": "npm run build",
+    "postinstall": "node server.js",
     "start": "node server.js"
   },
   "repository": {
