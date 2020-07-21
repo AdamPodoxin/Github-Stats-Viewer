@@ -122,8 +122,8 @@ const loadUser = (user) => {
 
         card.childNodes[0].childNodes[0].innerHTML = language;
       });
-    }, 500);
-  }, 500);
+    }, 1500);
+  }, 1500);
 };
 
 const loadGithubRepo = (repoURL) => {
