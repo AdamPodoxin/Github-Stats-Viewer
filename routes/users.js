@@ -6,12 +6,14 @@ const https = require("https");
 const User = require("../Models/user.js");
 const Repo = require("../Models/repo.js");
 
+let userAgent = "";
+
 const getHttpRequest = (url, onFinish) => {
   const options = {
     headers: {
-      "User-Agent": "AdamPodoxin",
-      Accept: "application/vnd.github.mercy-preview+json",
-      Authorization: "token 680566e09b342cdf1f56ef0224a46533f8792b2c",
+      "Content-Type": "application/json",
+      "User-Agent": userAgent,
+      Authorization: "Basic 680566e09b342cdf1f56ef0224a46533f8792b2c",
     },
   };
 
@@ -20,8 +22,13 @@ const getHttpRequest = (url, onFinish) => {
 
     response.on("data", (chunk) => (data += chunk));
     response.on("end", () => {
-      const jsonData = JSON.parse(data);
-      onFinish(jsonData);
+      try {
+        const jsonData = JSON.parse(data);
+        onFinish(jsonData);
+      } catch (err) {
+        console.error(err);
+        console.log(data);
+      }
     });
   };
 
@@ -29,8 +36,10 @@ const getHttpRequest = (url, onFinish) => {
 };
 
 router.get("/", (req, res) => {
-  const user = req.originalUrl.replace("/api/users/", "");
+  const user = req.originalUrl.replace("/api/user=", "");
   const url = `https://api.github.com/users/${user}`;
+
+  userAgent = req.get("User-Agent");
 
   getHttpRequest(url, (userData) => {
     const user = new User(

@@ -9,7 +9,7 @@ import { colors } from "./languageColors.js";
 let userInput, reposDiv;
 
 const getUser = () => {
-  getApiRequest(`users/${userInput.value}`, (user) => loadUser(user));
+  getApiRequest(`user=${userInput.value}`, (user) => loadUser(user));
 };
 
 const loadUser = (user) => {
@@ -46,8 +46,10 @@ const loadUser = (user) => {
       attributes.html_url == null ? "" : attributes.html_url
     );
 
-    if (attributes.topics.length > 0) {
-      newRepo.setAttribute("topics", attributes.topics.join());
+    if (attributes.topics != null) {
+      if (attributes.topics.length > 0) {
+        newRepo.setAttribute("topics", attributes.topics.join());
+      }
     }
 
     let languages = [];

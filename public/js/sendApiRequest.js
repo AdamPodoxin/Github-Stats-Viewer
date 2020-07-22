@@ -3,8 +3,13 @@ const getApiRequest = (path, callback) => {
 
   xhr.onreadystatechange = () => {
     if (xhr.readyState == XMLHttpRequest.DONE) {
-      const response = JSON.parse(xhr.responseText);
-      callback(response);
+      try {
+        const response = JSON.parse(xhr.responseText);
+        callback(response);
+      } catch (err) {
+        console.error(err);
+        console.log(xhr.responseText);
+      }
     }
   };
 
