@@ -62,68 +62,44 @@ const loadUser = (user) => {
     newRepo.setAttribute("languages-total", languagesTotal);
 
     reposDiv.appendChild(newRepo);
-  });
 
-  sFront.scanForElements("github-repo");
-  setTimeout(() => {
-    let repos = document.getElementsByTagName("github-repo");
+    sFront.updateSingleElement(newRepo, (elementObject) => {
+      let variables = { ...elementObject.variables };
 
-    Array.from(repos).forEach((repo) => {
-      let languages = repo.getAttribute("languages");
+      //Languages
+      let languages = variables.languages;
+      Array.from(languages.split(",")).forEach((language) => {
+        let languageCard = document.createElement("language-card");
 
-      if (languages != null) {
-        Array.from(languages.split(",")).forEach((language) => {
-          let languageCard = document.createElement("language-card");
+        let languageDetails = language.split("_");
+        languageCard.setAttribute("language", languageDetails[0]);
+        languageCard.setAttribute("amount", languageDetails[1]);
 
-          let languageDetails = language.split("_");
-          languageCard.setAttribute("language", languageDetails[0]);
-          languageCard.setAttribute("amount", languageDetails[1]);
+        newRepo.childNodes[0].appendChild(languageCard);
 
-          repo.childNodes[0].appendChild(languageCard);
+        sFront.updateSingleElement(languageCard, (elementObject) => {
+          languageCard.childNodes[0].style.backgroundColor =
+            colors[languageDetails[0]].color;
+
+          let ratio = parseInt(languageDetails[1]) / languagesTotal;
+          let width = ratio * 450;
+
+          languageCard.childNodes[0].style.width = width + "px";
         });
-      }
-
-      repo.childNodes[0].appendChild(document.createElement("br"));
-
-      let topics = repo.getAttribute("topics");
-
-      if (topics != null) {
-        Array.from(topics.split(",")).forEach((topic) => {
-          let topicCard = document.createElement("topic-card");
-          topicCard.setAttribute("topic", topic);
-
-          repo.childNodes[0].appendChild(topicCard);
-        });
-      }
-    });
-
-    sFront.scanForElements("topic-card");
-    sFront.scanForElements("language-card");
-
-    setTimeout(() => {
-      let languageCards = document.getElementsByTagName("language-card");
-
-      Array.from(languageCards).forEach((card) => {
-        let language = card.getAttribute("language");
-        let amount = parseInt(card.getAttribute("amount"));
-
-        card.childNodes[0].style.backgroundColor = colors[language].color;
-
-        let parentRepo = card.parentNode.parentNode;
-        let languagesTotal = parseInt(
-          parentRepo.getAttribute("languages-total")
-        );
-
-        let ratio = amount / languagesTotal;
-
-        let width = ratio * 450;
-
-        card.childNodes[0].style.width = width + "px";
-
-        card.childNodes[0].childNodes[0].innerHTML = language;
       });
-    }, 1500);
-  }, 1500);
+
+      newRepo.childNodes[0].appendChild(document.createElement("br"));
+
+      //Topics
+      Array.from(attributes.topics).forEach((topic) => {
+        let topicCard = document.createElement("topic-card");
+        topicCard.setAttribute("topic", topic);
+
+        newRepo.childNodes[0].appendChild(topicCard);
+        sFront.updateSingleElement(topicCard);
+      });
+    });
+  });
 };
 
 const loadGithubRepo = (repoURL) => {

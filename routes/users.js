@@ -11,6 +11,7 @@ const getHttpRequest = (url, onFinish) => {
     headers: {
       "User-Agent": "AdamPodoxin",
       Accept: "application/vnd.github.mercy-preview+json",
+      Authorization: "token 680566e09b342cdf1f56ef0224a46533f8792b2c",
     },
   };
 
