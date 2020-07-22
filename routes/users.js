@@ -1,84 +1,63 @@
 const express = require("express");
 const router = express.Router();
 
-const https = require("https");
+const fetch = require("node-fetch");
 
 const User = require("../Models/user.js");
 const Repo = require("../Models/repo.js");
 
-let userAgent = "";
-
-const getHttpRequest = (url, onFinish) => {
-  const options = {
-    headers: {
-      "Content-Type": "application/json",
-      "User-Agent": userAgent,
-      Authorization: "Basic 680566e09b342cdf1f56ef0224a46533f8792b2c",
-    },
-  };
-
-  const callback = (response) => {
-    let data = "";
-
-    response.on("data", (chunk) => (data += chunk));
-    response.on("end", () => {
-      try {
-        const jsonData = JSON.parse(data);
-        onFinish(jsonData);
-      } catch (err) {
-        console.error(err);
-        console.log(data);
-      }
-    });
-  };
-
-  https.get(url, options, callback).on("error", (err) => console.error(err));
-};
+const { client_id, client_secret } = require("../private_data.js");
+const auth = `client_id=${client_id}&client_secret=${client_secret}`;
 
 router.get("/", (req, res) => {
   const user = req.originalUrl.replace("/api/user=", "");
   const url = `https://api.github.com/users/${user}`;
 
-  userAgent = req.get("User-Agent");
+  fetch(`${url}?${auth}`).then((userData) =>
+    userData.json().then((userJson) => {
+      let user = new User(
+        userJson.avatar_url,
+        userJson.login,
+        userJson.name,
+        userJson.html_url,
+        []
+      );
 
-  getHttpRequest(url, (userData) => {
-    const user = new User(
-      userData.avatar_url,
-      userData.login,
-      userData.name,
-      userData.html_url,
-      []
-    );
-
-    getHttpRequest(userData.repos_url, (reposData) => {
-      getHttpRequest(`${url}/starred`, (starredData) => {
-        const starredRepos = starredData.map((starredRepo) => starredRepo.name);
-
-        const reposPromise = new Promise((resolve, reject) => {
-          reposData.forEach((repo) => {
-            getHttpRequest(repo.languages_url, (languagesData) => {
-              const newRepo = new Repo(
-                repo.id,
-                repo.node_id,
-                repo.name,
-                repo.description,
-                repo.html_url,
-                repo.topics,
-                languagesData,
-                starredRepos.includes(repo.name)
+      fetch(`${userJson.repos_url}?${auth}`).then((reposData) =>
+        reposData.json().then((reposJson) => {
+          fetch(`${url}/starred?${auth}`).then((starredData) => {
+            starredData.json().then((starredJson) => {
+              let starredRepos = starredJson.map(
+                (starredRepo) => starredRepo.name
               );
-              user.repos.push(newRepo);
-              if (user.repos.length >= reposData.length - 1) resolve();
+
+              new Promise((resolve, reject) => {
+                reposJson.forEach((repo) => {
+                  fetch(`${repo.languages_url}?${auth}`).then((languagesData) =>
+                    languagesData.json().then((languagesJson) => {
+                      let newRepo = new Repo(
+                        repo.id,
+                        repo.node_id,
+                        repo.name,
+                        repo.description,
+                        repo.html_url,
+                        repo.topics,
+                        languagesJson,
+                        starredRepos.includes(repo.name)
+                      );
+
+                      user.repos.push(newRepo);
+                      if (user.repos.length >= reposJson.length - 1) resolve();
+                    })
+                  );
+                });
+              }).then(() => res.json(user));
             });
           });
-        });
-
-        reposPromise.then(() => {
-          res.json(user);
-        });
-      });
-    });
-  });
+        })
+      );
+    })
+  );
 });
 
 module.exports = router;
