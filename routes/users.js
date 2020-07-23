@@ -6,14 +6,19 @@ const fetch = require("node-fetch");
 const User = require("../Models/user.js");
 const Repo = require("../Models/repo.js");
 
-const { client_id, client_secret } = require("../private_data.js");
-const auth = `client_id=${client_id}&client_secret=${client_secret}`;
+const { token } = require("../private_data.js");
+
+const headers = {
+  Authorization: token,
+  Accept: "application/vnd.github.mercy-preview+json",
+};
+const parameters = { method: "GET", headers };
 
 router.get("/", (req, res) => {
   const user = req.originalUrl.replace("/api/user=", "");
   const url = `https://api.github.com/users/${user}`;
 
-  fetch(`${url}?${auth}`).then((userData) =>
+  fetch(url, parameters).then((userData) =>
     userData.json().then((userJson) => {
       let user = new User(
         userJson.avatar_url,
@@ -23,9 +28,9 @@ router.get("/", (req, res) => {
         []
       );
 
-      fetch(`${userJson.repos_url}?${auth}`).then((reposData) =>
+      fetch(userJson.repos_url, parameters).then((reposData) =>
         reposData.json().then((reposJson) => {
-          fetch(`${url}/starred?${auth}`).then((starredData) => {
+          fetch(`${url}/starred`, parameters).then((starredData) => {
             starredData.json().then((starredJson) => {
               let starredRepos = starredJson.map(
                 (starredRepo) => starredRepo.name
@@ -33,7 +38,7 @@ router.get("/", (req, res) => {
 
               new Promise((resolve, reject) => {
                 reposJson.forEach((repo) => {
-                  fetch(`${repo.languages_url}?${auth}`).then((languagesData) =>
+                  fetch(repo.languages_url, parameters).then((languagesData) =>
                     languagesData.json().then((languagesJson) => {
                       let newRepo = new Repo(
                         repo.id,
